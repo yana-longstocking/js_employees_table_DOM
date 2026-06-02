@@ -2,16 +2,23 @@
 
 const table = document.querySelector('table');
 let ascending = true;
+let lastSortedColumn = null;
 
 table.onclick = function (e) {
   if (e.target.tagName !== 'TH') {
     return;
   }
 
-  const th = e.target;
+  const columnIndex = e.target.cellIndex;
 
-  sortTable(th.cellIndex);
-  ascending = !ascending;
+  if (lastSortedColumn === columnIndex) {
+    ascending = !ascending;
+  } else {
+    ascending = true;
+    lastSortedColumn = columnIndex;
+  }
+
+  sortTable(columnIndex);
 };
 
 function compareTextValues(textA, textB, asc = true) {
@@ -23,7 +30,7 @@ function compareTextValues(textA, textB, asc = true) {
 }
 
 function compareNumericValues(numA, numB, asc = true) {
-  if (ascending) {
+  if (asc) {
     return numA - numB;
   }
 
@@ -38,7 +45,7 @@ function compareCurrencyValues(priceA, priceB, asc = true) {
   const amountA = parseCurrency(priceA);
   const amountB = parseCurrency(priceB);
 
-  if (ascending) {
+  if (asc) {
     return amountA - amountB;
   }
 
